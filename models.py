@@ -8,7 +8,9 @@ from pydantic import BaseModel, EmailStr, Field, SecretStr
 
 
 class BaseUser(BaseModel):
-    user_id: UUID = Field(...)
+    user_id: UUID = Field(
+        ...,
+        example="4zb48f84-4865-3214-z7qw-6c654e48aga7")
     username: str = Field(
         ...,
         min_length=1,
@@ -44,8 +46,13 @@ class UserOut(BaseUser):
 
 
 class Tweet(BaseModel):
-    tweet_id: UUID = Field(...)
-    user_id: UserIn = Field(...)
+    tweet_id: UUID = Field(
+        ...,
+        example="3fa85f64-5717-4562-b3fc-2c963f66afa6")
+    user_id: BaseUser = Field(
+        ...,
+        title="The user who tweeted it",
+        example="4zb48f84-4865-3214-z7qw-6c654e48aga7")
     text: str = Field(
         ...,
         min_length=1,
@@ -54,5 +61,6 @@ class Tweet(BaseModel):
     )
     created_time: datetime = Field(
         default=datetime.now(),
+        title="Date and time when was tweeted",
         example="2021-06-25 07:58:56.550604"
     )
