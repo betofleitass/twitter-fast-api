@@ -4,8 +4,8 @@ from uuid import UUID
 from fastapi import (APIRouter, Body, HTTPException,
                      Path, Query, status, )
 
-from models.users_model import UserIn, UserOut
-from models.tweets_model import Tweet
+from models.models import UserCreate, User
+from models.models import Tweet
 
 router = APIRouter(
     prefix="/tweets",
@@ -16,12 +16,12 @@ router = APIRouter(
 # Tweet Post
 @router.post(
     path="/",
-    response_model=UserOut,
+    response_model=User,
     status_code=status.HTTP_201_CREATED,
     summary="Post a new tweet"
 )
 async def post_tweet(
-    user: UserIn = Body(
+    user: User = Body(
         ...,
         examples={
             "normal": {
@@ -45,7 +45,7 @@ async def post_tweet(
 
     # Parameters:
     -  ### Request Body parameter :
-        - **user: UserIn**: a userIn model with the following information:
+        - **user: User**: a User model with the following information:
             - **user_id: UUID (required)** -> User's Id
             - **username: str (required)** -> User's username
             - **first_name: str (required)** -> User's first name

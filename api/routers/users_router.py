@@ -4,7 +4,7 @@ from uuid import UUID
 from fastapi import (APIRouter, Body, FastAPI, HTTPException,
                      Path, Query, status, )
 
-from models.users_model import UserIn, UserOut
+from models.models import UserCreate, User
 
 router = APIRouter(
     prefix="/users",
@@ -15,12 +15,12 @@ router = APIRouter(
 # User Create
 @router.post(
     path="/",
-    response_model=UserOut,
+    response_model=User,
     status_code=status.HTTP_201_CREATED,
     summary="Create a new User"
 )
 async def create_user(
-    user: UserIn = Body(
+    user: UserCreate = Body(
         ...,
         examples={
             "normal": {
@@ -44,7 +44,7 @@ async def create_user(
 
     # Parameters:
     -  ### Request Body parameter :
-        - **user: UserIn**: a userIn model with the following information:
+        - **user: UserCreate**: a UserCreate model with the following information:
             - **user_id: UUID (required)** -> User's Id
             - **username: str (required)** -> User's username
             - **first_name: str (required)** -> User's first name
@@ -66,7 +66,7 @@ async def create_user(
 # List of Users Read
 @router.get(
     path="/",
-    # response_model=List[UserOut],
+    # response_model=List[User],
     status_code=status.HTTP_200_OK,
     summary="Get a list of users"
 )
@@ -92,7 +92,7 @@ async def get_users(
 # User Read
 @router.get(
     path="/{user_id}",
-    # response_model=UserOut,
+    # response_model=User,
     status_code=status.HTTP_200_OK,
     summary="Get a user"
 )
@@ -131,7 +131,7 @@ async def get_user(
 
 @router.put(
     path="/{user_id}",
-    # response_model=UserOut,
+    # response_model=User,
     status_code=status.HTTP_200_OK,
     summary="Update a user"
 )
@@ -169,7 +169,7 @@ async def update_user(
 # User Delete
 @router.delete(
     path="/{user_id}",
-    # response_model=UserOut,
+    # response_model=User,
     status_code=status.HTTP_200_OK,
     summary="Delete a user"
 )
