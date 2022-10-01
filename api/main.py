@@ -6,7 +6,7 @@ from fastapi import (Body, FastAPI, HTTPException,
 
 from pydantic import EmailStr, SecretStr
 
-from models import UserIn, UserOut
+from models.users_model import UserIn, UserOut
 
 app = FastAPI()
 
