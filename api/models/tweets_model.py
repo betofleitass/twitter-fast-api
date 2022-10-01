@@ -3,7 +3,7 @@ from uuid import UUID
 
 from pydantic import BaseModel, Field
 
-from users_model import BaseUser
+from models.users_model import BaseUser
 
 
 class Tweet(BaseModel):

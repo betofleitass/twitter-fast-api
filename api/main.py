@@ -3,13 +3,14 @@ from fastapi import (Body, FastAPI, HTTPException,
 
 from pydantic import EmailStr, SecretStr
 
-from routers import users_router
+from routers import users_router, tweets_router
 
 
 app = FastAPI()
 
 
 app.include_router(users_router.router)
+app.include_router(tweets_router.router)
 
 
 @app.get(
@@ -18,11 +19,3 @@ app.include_router(users_router.router)
     tags=["Home"])
 async def home():
     return {"Hello": "World"}
-
-# Users
-
-# Tweets
-# Tweet Create
-# Tweet Read
-# Tweet Update
-# Tweet Delete

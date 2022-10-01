@@ -17,8 +17,7 @@ router = APIRouter(
     path="/",
     response_model=UserOut,
     status_code=status.HTTP_201_CREATED,
-    summary="Create a new User",
-    tags=["Users"]
+    summary="Create a new User"
 )
 async def create_user(
     user: UserIn = Body(
@@ -69,8 +68,7 @@ async def create_user(
     path="/",
     # response_model=List[UserOut],
     status_code=status.HTTP_200_OK,
-    summary="Get a list of users",
-    tags=["Users"]
+    summary="Get a list of users"
 )
 async def get_users(
 
@@ -96,8 +94,7 @@ async def get_users(
     path="/{user_id}",
     # response_model=UserOut,
     status_code=status.HTTP_200_OK,
-    summary="Get a user",
-    tags=["Users"]
+    summary="Get a user"
 )
 async def get_user(
         user_id: UUID = Path(
@@ -136,8 +133,7 @@ async def get_user(
     path="/{user_id}",
     # response_model=UserOut,
     status_code=status.HTTP_200_OK,
-    summary="Update a user",
-    tags=["Users"]
+    summary="Update a user"
 )
 async def update_user(
         user_id: UUID = Path(
@@ -175,8 +171,7 @@ async def update_user(
     path="/{user_id}",
     # response_model=UserOut,
     status_code=status.HTTP_200_OK,
-    summary="Delete a user",
-    tags=["Users"]
+    summary="Delete a user"
 )
 async def delete_user(
         user_id: UUID = Path(
