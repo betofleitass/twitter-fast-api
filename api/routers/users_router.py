@@ -2,14 +2,29 @@ from typing import List
 from uuid import UUID
 
 from fastapi import (APIRouter, Body, FastAPI, HTTPException,
-                     Path, Query, status, )
+                     Path, Query, status, Depends)
 
 from models.models import UserCreate, User
+
+from sqlalchemy.orm import Session
+
+from sql.database import SessionLocal
+
+from sql import crud
 
 router = APIRouter(
     prefix="/users",
     tags=["Users"],
 )
+
+
+# Dependency
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 
 # User Create
@@ -27,7 +42,6 @@ async def create_user(
                 "summary": "A user is created",
                 "description": "User creation works correctly.",
                 "value": {
-                    "user_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
                     "username": "johndoe",
                     "first_name": "John",
                     "last_name": "Doe",
@@ -37,7 +51,8 @@ async def create_user(
                 },
             },
         },
-    )
+    ),
+    db: Session = Depends(get_db)
 ):
     """
     # Creates a new user and save it to the database:
@@ -45,7 +60,6 @@ async def create_user(
     # Parameters:
     -  ### Request Body parameter :
         - **user: UserCreate**: a UserCreate model with the following information:
-            - **user_id: UUID (required)** -> User's Id
             - **username: str (required)** -> User's username
             - **first_name: str (required)** -> User's first name
             - **last_name: str (required)** -> User's last name
@@ -60,7 +74,10 @@ async def create_user(
     - **HTTP 404**: When an error ocurred during the creation
     """
 
-    return user
+    db_user = crud.get_user_by_email(db, email=user.email)
+    if db_user:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    return crud.create_user(db=db, user=user)
 
 
 # List of Users Read

@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime, Date
 from sqlalchemy.orm import relationship
 
 from .database import Base
@@ -13,7 +13,7 @@ class User(Base):
     first_name = Column(String)
     last_name = Column(String)
     email = Column(String, unique=True, index=True)
-    birth_date = Column(DateTime)
+    birth_date = Column(Date)
     hashed_password = Column(String)
 
     tweets = relationship("Tweet", back_populates="user")

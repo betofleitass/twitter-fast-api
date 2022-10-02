@@ -20,16 +20,6 @@ app = FastAPI()
 app.include_router(users_router.router)
 app.include_router(tweets_router.router)
 
-# Dependency
-
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
 
 @app.get(
     path="/",

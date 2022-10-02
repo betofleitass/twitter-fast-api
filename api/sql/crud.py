@@ -1,3 +1,5 @@
+import uuid
+
 from sqlalchemy.orm import Session
 
 from sql import alchemy_models
@@ -18,9 +20,14 @@ def get_users(db: Session, skip: int = 0, limit: int = 100):
 
 
 def create_user(db: Session, user: UserCreate):
-    fake_hashed_password = user.password + "notreallyhashed"
     db_user = alchemy_models.User(
-        email=user.email, hashed_password=fake_hashed_password)
+        user_id=str(uuid.uuid4()),
+        username=user.username,
+        first_name=user.first_name,
+        last_name=user.last_name,
+        birth_date=user.birth_date,
+        email=user.email,
+        hashed_password=user.password)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
