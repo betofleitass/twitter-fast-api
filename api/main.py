@@ -2,7 +2,7 @@ from fastapi import (FastAPI, status)
 from fastapi.openapi.utils import get_openapi
 
 
-from routers import users_router, tweets_router
+from routers import users, tweets
 from sql import models
 from config.database import engine
 
@@ -11,8 +11,8 @@ models.Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
 
-app.include_router(users_router.router)
-app.include_router(tweets_router.router)
+app.include_router(users.router)
+app.include_router(tweets.router)
 
 
 # Customize open api schema
