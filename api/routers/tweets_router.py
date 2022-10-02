@@ -4,8 +4,7 @@ from uuid import UUID
 from fastapi import (APIRouter, Body, Depends, HTTPException,
                      Path, Query, status, )
 
-from models.models import UserCreate, User
-from models.models import Tweet
+from models.models import TweetCreate, Tweet
 
 from sqlalchemy.orm import Session
 
@@ -36,17 +35,15 @@ def get_db():
     summary="Post a new tweet"
 )
 async def post_tweet(
-    tweet: Tweet = Body(
+    tweet: TweetCreate = Body(
         ...,
         examples={
             "normal": {
                 "summary": "A tweet is posted",
                 "description": "Tweet creation works correctly.",
                 "value": {
-                    "tweet_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
                     "user_id": "22a16cfe-3e06-40bb-9043-2fa419262cf2",
                     "text": "This is a tweet",
-                    "created_time": "2021-06-25 07:58:56.550604",
                 },
             },
         },
@@ -58,11 +55,9 @@ async def post_tweet(
 
     # Parameters:
     -  ### Request Body parameter :
-        - **tweet: Tweet**: a Tweet model with the following information:
-            - **tweet_id: UUID (required)** -> Tweet's Id
+        - **tweet: TweetCreate**: a TweetCreate model with the following information:
             - **user_id: UserBase (required)** -> User's Id
             - **text: str (required)** -> Tweet's text
-            - **created_time: date (required)** -> Tweet's creation time
 
     # Returns:
     - **tweet** : The tweet that was post with all the information
@@ -70,8 +65,7 @@ async def post_tweet(
     # Raises:
     - **HTTP 404**: When an error ocurred during the creation
     """
-    crud.post_tweet(db=db, tweet=tweet)
-    return tweet
+    return crud.post_tweet(db=db, tweet=tweet)
 
 
 # Get List of Tweets

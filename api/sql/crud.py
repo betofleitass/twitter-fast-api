@@ -1,10 +1,12 @@
 import uuid
 
+from datetime import datetime
+
 from sqlalchemy.orm import Session
 
 from sql import alchemy_models
 from models.models import User, UserCreate
-from models.models import Tweet
+from models.models import Tweet, TweetCreate
 
 
 def get_user(db: Session, user_id: str):
@@ -34,12 +36,13 @@ def create_user(db: Session, user: UserCreate):
     return db_user
 
 
-def post_tweet(db: Session, tweet: Tweet):
+def post_tweet(db: Session, tweet: TweetCreate):
     db_tweet = alchemy_models.Tweet(
         tweet_id=str(uuid.uuid4()),
         user_id=str(tweet.user_id),
         text=tweet.text,
-        created_time=tweet.created_time,)
+        created_time=datetime.now(),
+    )
     db.add(db_tweet)
     db.commit()
     db.refresh(db_tweet)
