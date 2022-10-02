@@ -7,8 +7,8 @@ from models.models import User, UserCreate
 from models.models import Tweet
 
 
-def get_user(db: Session, user_id: int):
-    return db.query(alchemy_models.User).filter(alchemy_models.User.user_id == user_id).first()
+def get_user(db: Session, user_id: str):
+    return db.query(alchemy_models.User).filter(alchemy_models.User.user_id == str(user_id)).first()
 
 
 def get_user_by_email(db: Session, email: str):

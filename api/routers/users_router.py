@@ -109,7 +109,7 @@ async def get_users(
 # User Read
 @router.get(
     path="/{user_id}",
-    # response_model=User,
+    response_model=User,
     status_code=status.HTTP_200_OK,
     summary="Get a user"
 )
@@ -122,10 +122,11 @@ async def get_user(
             "normal": {
                 "summary": "Get a user",
                 "description": "User get works correctly.",
-                "value": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                "value": "3fa85f64-5717-4562-b3fc-2c963f66afa3",
             },
         },
-        )
+        ),
+        db: Session = Depends(get_db)
 ):
     """
     # Get a single user with the given user id:
@@ -141,7 +142,10 @@ async def get_user(
     - **HTTP 404**: When an error ocurred during the update
     """
 
-    return {"user": user_id}
+    db_user = crud.get_user(db, user_id=user_id)
+    if db_user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return db_user
 
 # User Update
 
