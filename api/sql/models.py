@@ -18,15 +18,17 @@ class User(Base):
     birth_date = Column(Date)
     hashed_password = Column(String)
 
-    tweets = relationship("Tweet", back_populates="user")
+    tweets = relationship("Tweet", back_populates="user",
+                          cascade="all, delete-orphan")
 
 
 class Tweet(Base):
     __tablename__ = "tweets"
 
     tweet_id = Column(String, primary_key=True, index=True)
-    user_id = Column(String, ForeignKey("users.user_id"))
+    user_id = Column(String, ForeignKey("users.user_id",))
     text = Column(String)
     created_time = Column(DateTime)
 
-    user = relationship("User", back_populates="tweets")
+    user = relationship("User",
+                        back_populates="tweets",)
