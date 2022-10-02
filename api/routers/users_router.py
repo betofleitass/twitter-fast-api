@@ -4,7 +4,7 @@ from uuid import UUID
 from fastapi import (APIRouter, Body, FastAPI, HTTPException,
                      Path, Query, status, Depends)
 
-from models.schemas import UserCreate, User
+from schemas.users import UserCreate, User
 
 from sqlalchemy.orm import Session
 
