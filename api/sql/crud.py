@@ -9,6 +9,8 @@ from schemas.users import User, UserCreate
 from schemas.tweets import Tweet, TweetCreate
 
 
+# Users
+
 def get_user(db: Session, user_id: str):
     return db.query(models.User).filter(models.User.user_id == str(user_id)).first()
 
@@ -36,6 +38,8 @@ def create_user(db: Session, user: UserCreate):
     return db_user
 
 
+# Tweets
+
 def post_tweet(db: Session, tweet: TweetCreate):
     db_tweet = models.Tweet(
         tweet_id=str(uuid.uuid4()),
@@ -49,5 +53,9 @@ def post_tweet(db: Session, tweet: TweetCreate):
     return db_tweet
 
 
-def get_items(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.Item).offset(skip).limit(limit).all()
+def get_tweets(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(models.Tweet).offset(skip).limit(limit).all()
+
+
+def get_tweet(db: Session, tweet_id: str):
+    return db.query(models.Tweet).filter(models.Tweet.tweet_id == str(tweet_id)).first()

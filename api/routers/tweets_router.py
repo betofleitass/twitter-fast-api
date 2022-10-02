@@ -71,27 +71,44 @@ async def post_tweet(
 # Get List of Tweets
 @router.get(
     path="/",
-    # response_model=List[Tweet],
+    response_model=List[Tweet],
     status_code=status.HTTP_200_OK,
     summary="Get a list of tweets"
 )
 async def get_tweets(
-
+    skip: int = Query(
+        default=0,
+        title="Skip",
+        description="Numbers of tweets to skip",
+        ge=0,
+        example=5,
+    ),
+    limit: int = Query(
+        default=0,
+        title="limit",
+        description="Limit the numbers of tweets returned",
+        ge=0,
+        example=5,
+    ),
+    db: Session = Depends(get_db)
 ):
     """
     # Get a list of tweets:
 
     # Parameters:
-    -  ### None
+    -  ### Query parameters :
+        - **skip: int (optional)** -> Numbers of tweets to skip
+        - **limit: int (optional)** -> The limit the numbers of tweets returned
 
     # Returns:
-    - **tweets** : A list of tweets
+    - **list[tweets]** : A list of tweets
 
     # Raises:
     - **HTTP 404**: When an error ocurred
     """
 
-    return {"message": "ok"}
+    tweets = crud.get_tweets(db, skip=skip, limit=limit)
+    return tweets
 
 
 # Get a Tweet
@@ -110,10 +127,11 @@ async def get_tweet(
             "normal": {
                 "summary": "Get a tweet",
                 "description": "Get tweet works correctly.",
-                "value": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                "value": "cd5bf8d1-8e70-49b2-a4e5-6c6d37fdd266",
             },
         },
-        )
+        ),
+        db: Session = Depends(get_db)
 ):
     """
     # Get a single tweet with the given tweet id:
@@ -129,7 +147,10 @@ async def get_tweet(
     - **HTTP 404**: When an error ocurred getting the tweet
     """
 
-    return {"user": tweet_id}
+    db_tweet = crud.get_tweet(db, tweet_id=tweet_id)
+    if db_tweet is None:
+        raise HTTPException(status_code=404, detail="Tweet not found")
+    return db_tweet
 
 
 # Delete Tweet
