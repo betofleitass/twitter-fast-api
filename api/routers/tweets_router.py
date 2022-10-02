@@ -2,15 +2,12 @@ from typing import List
 from uuid import UUID
 
 from fastapi import (APIRouter, Body, Depends, HTTPException,
-                     Path, Query, status, )
-
-from schemas.tweets import TweetCreate, Tweet
-
+                     Path, Query, status)
 from sqlalchemy.orm import Session
 
-from sql.database import SessionLocal
-
+from schemas.tweets import Tweet, TweetCreate
 from sql import crud
+from sql.database import SessionLocal
 
 router = APIRouter(
     prefix="/tweets",

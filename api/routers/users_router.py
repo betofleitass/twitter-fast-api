@@ -1,16 +1,13 @@
 from typing import List, Optional
 from uuid import UUID
 
-from fastapi import (APIRouter, Body, FastAPI, HTTPException,
-                     Path, Query, status, Depends)
-
-from schemas.users import UserCreate, User
-
+from fastapi import (APIRouter, Body, Depends, HTTPException,
+                     Path, Query, status)
 from sqlalchemy.orm import Session
 
-from sql.database import SessionLocal
-
+from schemas.users import UserCreate, User
 from sql import crud
+from sql.database import SessionLocal
 
 router = APIRouter(
     prefix="/users",

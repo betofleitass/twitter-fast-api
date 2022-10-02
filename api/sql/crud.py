@@ -1,12 +1,11 @@
-import uuid
-
 from datetime import datetime
+import uuid
 
 from sqlalchemy.orm import Session
 
 from sql import models
-from schemas.users import User, UserCreate
-from schemas.tweets import Tweet, TweetCreate
+from schemas.users import UserCreate
+from schemas.tweets import TweetCreate
 
 
 # Users

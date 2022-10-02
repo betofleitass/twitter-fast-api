@@ -1,8 +1,6 @@
 from fastapi import (FastAPI, status)
 
-
 from routers import users_router, tweets_router
-
 from sql import models
 from sql.database import engine
 
