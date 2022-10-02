@@ -3,6 +3,8 @@ from uuid import UUID
 
 from pydantic import BaseModel, EmailStr, Field, SecretStr
 
+# Pydantic models.
+
 
 class UserBase(BaseModel):
     username: str = Field(

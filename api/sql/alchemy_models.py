@@ -5,6 +5,8 @@ from .database import Base
 
 
 # SQLAlchemy models
+
+
 class User(Base):
     __tablename__ = "users"
 
