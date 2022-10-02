@@ -34,5 +34,17 @@ def create_user(db: Session, user: UserCreate):
     return db_user
 
 
+def post_tweet(db: Session, tweet: Tweet):
+    db_tweet = alchemy_models.Tweet(
+        tweet_id=str(uuid.uuid4()),
+        user_id=str(tweet.user_id),
+        text=tweet.text,
+        created_time=tweet.created_time,)
+    db.add(db_tweet)
+    db.commit()
+    db.refresh(db_tweet)
+    return db_tweet
+
+
 def get_items(db: Session, skip: int = 0, limit: int = 100):
     return db.query(alchemy_models.Item).offset(skip).limit(limit).all()
