@@ -32,7 +32,7 @@ class Tweet(BaseModel):
     tweet_id: UUID = Field(
         ...,
         example="3fa85f64-5717-4562-b3fc-2c963f66afa6")
-    user_id: UserBase = Field(
+    user_id: UUID = Field(
         ...,
         title="The user who tweeted it",
         example="4zb48f84-4865-3214-z7qw-6c654e48aga7")

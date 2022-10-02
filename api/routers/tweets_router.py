@@ -1,11 +1,17 @@
 from typing import List
 from uuid import UUID
 
-from fastapi import (APIRouter, Body, HTTPException,
+from fastapi import (APIRouter, Body, Depends, HTTPException,
                      Path, Query, status, )
 
 from models.models import UserCreate, User
 from models.models import Tweet
+
+from sqlalchemy.orm import Session
+
+from sql.database import SessionLocal
+
+from sql import crud
 
 router = APIRouter(
     prefix="/tweets",
@@ -13,55 +19,59 @@ router = APIRouter(
 )
 
 
+# Dependency
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+
 # Tweet Post
 @router.post(
     path="/",
-    response_model=User,
+    response_model=Tweet,
     status_code=status.HTTP_201_CREATED,
     summary="Post a new tweet"
 )
 async def post_tweet(
-    user: User = Body(
+    tweet: Tweet = Body(
         ...,
         examples={
             "normal": {
-                "summary": "A user is created",
-                "description": "User creation works correctly.",
+                "summary": "A tweet is posted",
+                "description": "Tweet creation works correctly.",
                 "value": {
-                    "user_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-                    "username": "johndoe",
-                    "first_name": "John",
-                    "last_name": "Doe",
-                    "email": "user@example.com",
-                    "birth_date": "2022-10-01",
-                    "password": "mypassword123"
+                    "tweet_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                    "user_id": "22a16cfe-3e06-40bb-9043-2fa419262cf2",
+                    "text": "This is a tweet",
+                    "created_time": "2021-06-25 07:58:56.550604",
                 },
             },
         },
-    )
+    ),
+    db: Session = Depends(get_db)
 ):
     """
-    # Creates a new user and save it to the database:
+    # Post a new tweet and save it to the database:
 
     # Parameters:
     -  ### Request Body parameter :
-        - **user: User**: a User model with the following information:
-            - **user_id: UUID (required)** -> User's Id
-            - **username: str (required)** -> User's username
-            - **first_name: str (required)** -> User's first name
-            - **last_name: str (required)** -> User's last name
-            - **email: EmailStr (required)** -> User's email
-            - **birth_date: date (required)** -> User's birth date
-            - **password: SecretStr (required)** -> User's password
+        - **tweet: Tweet**: a Tweet model with the following information:
+            - **tweet_id: UUID (required)** -> Tweet's Id
+            - **user_id: UserBase (required)** -> User's Id
+            - **text: str (required)** -> Tweet's text
+            - **created_time: date (required)** -> Tweet's creation time
 
     # Returns:
-    - **user** : The user that was created with all the information
+    - **tweet** : The tweet that was post with all the information
 
     # Raises:
     - **HTTP 404**: When an error ocurred during the creation
     """
-
-    return user
+    crud.post_tweet(db=db, tweet=tweet)
+    return tweet
 
 
 # Get List of Tweets
