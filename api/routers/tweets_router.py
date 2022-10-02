@@ -6,7 +6,7 @@ from fastapi import (APIRouter, Body, Depends, HTTPException,
 from sqlalchemy.orm import Session
 
 from schemas.tweets import Tweet, TweetCreate
-from sql import crud
+import services.tweets as service
 from sql.database import SessionLocal
 
 router = APIRouter(
@@ -62,7 +62,7 @@ async def post_tweet(
     # Raises:
     - **HTTP 404**: When an error ocurred during the creation
     """
-    return crud.post_tweet(db=db, tweet=tweet)
+    return service.post_tweet(db=db, tweet=tweet)
 
 
 # Get List of Tweets
@@ -104,7 +104,7 @@ async def get_tweets(
     - **HTTP 404**: When an error ocurred
     """
 
-    db_tweets = crud.get_tweets(db, skip=skip, limit=limit)
+    db_tweets = service.get_tweets(db, skip=skip, limit=limit)
     return db_tweets
 
 
@@ -144,7 +144,7 @@ async def get_tweet(
     - **HTTP 404**: When an error ocurred getting the tweet
     """
 
-    db_tweet = crud.get_tweet(db, tweet_id=tweet_id)
+    db_tweet = service.get_tweet(db, tweet_id=tweet_id)
     if db_tweet is None:
         raise HTTPException(status_code=404, detail="Tweet not found")
     return db_tweet
@@ -185,7 +185,7 @@ async def delete_tweet(
     # Raises:
     - **HTTP 404**: When an error ocurred during the delete
     """
-    db_tweet = crud.delete_tweet(db, tweet_id)
+    db_tweet = service.delete_tweet(db, tweet_id)
     if db_tweet is None:
         raise HTTPException(status_code=404, detail="Tweet not found")
     return db_tweet

@@ -6,7 +6,7 @@ from fastapi import (APIRouter, Body, Depends, HTTPException,
 from sqlalchemy.orm import Session
 
 from schemas.users import UserCreate, User
-from sql import crud
+import services.users as service
 from sql.database import SessionLocal
 
 router = APIRouter(
@@ -71,10 +71,10 @@ async def create_user(
     - **HTTP 404**: When an error ocurred during the creation
     """
 
-    db_user = crud.get_user_by_email(db, email=user.email)
+    db_user = service.get_user_by_email(db, email=user.email)
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
-    return crud.create_user(db=db, user=user)
+    return service.create_user(db=db, user=user)
 
 
 # List of Users Read
@@ -116,7 +116,7 @@ async def get_users(
     - **HTTP 404**: When an error ocurred
     """
 
-    db_users = crud.get_users(db, skip=skip, limit=limit)
+    db_users = service.get_users(db, skip=skip, limit=limit)
     return db_users
 
 
@@ -156,7 +156,7 @@ async def get_user(
     - **HTTP 404**: When an error ocurred during the update
     """
 
-    db_user = crud.get_user(db, user_id=user_id)
+    db_user = service.get_user(db, user_id=user_id)
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
     return db_user
@@ -210,19 +210,19 @@ async def update_user(
     """
 
     # Chekc if the user exists
-    db_user = crud.get_user(db, user_id=user_id)
+    db_user = service.get_user(db, user_id=user_id)
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
 
     # Check if the username is taken
-    db_user_username = crud.get_user_by_username(db, username=username)
+    db_user_username = service.get_user_by_username(db, username=username)
     if db_user_username:
         raise HTTPException(status_code=404, detail="Username already taken")
 
     # If no exception is raised
-    db_user = crud.update_user(db,
-                               user_id=user_id,
-                               username=username)
+    db_user = service.update_user(db,
+                                  user_id=user_id,
+                                  username=username)
 
     return db_user
 
@@ -263,7 +263,7 @@ async def delete_user(
     - **HTTP 404**: When an error ocurred during the delete
     """
 
-    db_user = crud.delete_user(db, user_id)
+    db_user = service.delete_user(db, user_id)
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
     return db_user
