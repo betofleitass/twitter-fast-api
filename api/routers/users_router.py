@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from uuid import UUID
 
 from fastapi import (APIRouter, Body, FastAPI, HTTPException,
@@ -164,28 +164,36 @@ async def get_user(
         raise HTTPException(status_code=404, detail="User not found")
     return db_user
 
+
 # User Update
-
-
 @router.put(
     path="/{user_id}",
-    # response_model=User,
+    response_model=User,
     status_code=status.HTTP_200_OK,
     summary="Update a user"
 )
 async def update_user(
         user_id: UUID = Path(
-        ...,
-        title="User's id",
-        description="The id of the user to be updated. (required)",
-        examples={
-            "normal": {
-                "summary": "A user is updated",
-                "description": "User update works correctly.",
-                "value": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+            ...,
+            title="User's id",
+            description="The id of the user to be updated. (required)",
+            examples={
+                "normal": {
+                    "summary": "A user is updated",
+                    "description": "User update works correctly.",
+                    "value": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                },
             },
-        },
-        )
+        ),
+        username: Optional[str] = Query(
+            None,
+            title="New username",
+            description="Updates the username",
+            min_length=4,
+            max_length=15,
+            example="newusername",
+        ),
+        db: Session = Depends(get_db)
 ):
     """
     # Updates a user with the given user id:
@@ -194,6 +202,9 @@ async def update_user(
     -  ### Request Path parameter :
         - **user_id: UUID (required)** -> User's Id
 
+    -  ### Query parameter :
+        - **username: str (optional)** -> New username
+
     # Returns:
     - **user** : The user that was updated with it's information
 
@@ -201,7 +212,22 @@ async def update_user(
     - **HTTP 404**: When an error ocurred during the update
     """
 
-    return {"user_updated": user_id}
+    # Chekc if the user exists
+    db_user = crud.get_user(db, user_id=user_id)
+    if db_user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Check if the username is taken
+    db_user_username = crud.get_user_by_username(db, username=username)
+    if db_user_username:
+        raise HTTPException(status_code=404, detail="Username already taken")
+
+    # If no exception is raised
+    db_user = crud.update_user(db,
+                               user_id=user_id,
+                               username=username)
+
+    return db_user
 
 
 # User Delete
