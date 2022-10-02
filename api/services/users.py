@@ -3,8 +3,8 @@ import uuid
 
 from sqlalchemy.orm import Session
 
-from models.users import User
-from schemas.users import UserCreate
+from models import User
+from schemas import UserCreate
 
 
 # CRUD for Users

@@ -3,8 +3,8 @@ from fastapi.openapi.utils import get_openapi
 
 
 from routers import users, tweets
-from config.database import Base
-from config.database import engine
+from config import Base
+from config import engine
 
 Base.metadata.create_all(bind=engine)
 

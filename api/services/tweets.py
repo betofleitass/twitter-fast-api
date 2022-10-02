@@ -3,8 +3,8 @@ import uuid
 
 from sqlalchemy.orm import Session
 
-from models.tweets import Tweet
-from schemas.tweets import TweetCreate
+from models import Tweet
+from schemas import TweetCreate
 
 
 # CRUD for Tweets

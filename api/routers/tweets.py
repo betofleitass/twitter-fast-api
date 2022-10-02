@@ -5,9 +5,9 @@ from fastapi import (APIRouter, Body, Depends, HTTPException,
                      Path, Query, status)
 from sqlalchemy.orm import Session
 
-from schemas.tweets import Tweet, TweetCreate
-import services.tweets as service
-from config.database import SessionLocal
+from config import SessionLocal
+from schemas import Tweet, TweetCreate
+from services import tweets as service
 
 router = APIRouter(
     prefix="/tweets",

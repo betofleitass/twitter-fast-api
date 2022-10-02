@@ -5,9 +5,9 @@ from fastapi import (APIRouter, Body, Depends, HTTPException,
                      Path, Query, status)
 from sqlalchemy.orm import Session
 
-from schemas.users import UserCreate, User
-import services.users as service
-from config.database import SessionLocal
+from config import SessionLocal
+from schemas import UserCreate, User
+from services import users as service
 
 router = APIRouter(
     prefix="/users",
