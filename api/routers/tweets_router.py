@@ -4,7 +4,7 @@ from uuid import UUID
 from fastapi import (APIRouter, Body, Depends, HTTPException,
                      Path, Query, status, )
 
-from models.models import TweetCreate, Tweet
+from models.schemas import TweetCreate, Tweet
 
 from sqlalchemy.orm import Session
 

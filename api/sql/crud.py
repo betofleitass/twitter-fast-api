@@ -5,8 +5,8 @@ from datetime import datetime
 from sqlalchemy.orm import Session
 
 from sql import alchemy_models
-from models.models import User, UserCreate
-from models.models import Tweet, TweetCreate
+from models.schemas import User, UserCreate
+from models.schemas import Tweet, TweetCreate
 
 
 def get_user(db: Session, user_id: str):
