@@ -3,10 +3,10 @@ from fastapi.openapi.utils import get_openapi
 
 
 from routers import users, tweets
-from sql import models
+from config.database import Base
 from config.database import engine
 
-models.Base.metadata.create_all(bind=engine)
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 

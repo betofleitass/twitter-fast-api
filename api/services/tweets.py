@@ -3,14 +3,14 @@ import uuid
 
 from sqlalchemy.orm import Session
 
-from sql import models
+from models.tweets import Tweet
 from schemas.tweets import TweetCreate
 
 
 # CRUD for Tweets
 
 def post_tweet(db: Session, tweet: TweetCreate):
-    db_tweet = models.Tweet(
+    db_tweet = Tweet(
         tweet_id=str(uuid.uuid4()),
         user_id=str(tweet.user_id),
         text=tweet.text,
@@ -23,11 +23,11 @@ def post_tweet(db: Session, tweet: TweetCreate):
 
 
 def get_tweets(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.Tweet).offset(skip).limit(limit).all()
+    return db.query(Tweet).offset(skip).limit(limit).all()
 
 
 def get_tweet(db: Session, tweet_id: str):
-    return db.query(models.Tweet).filter(models.Tweet.tweet_id == str(tweet_id)).first()
+    return db.query(Tweet).filter(Tweet.tweet_id == str(tweet_id)).first()
 
 
 def delete_tweet(db: Session, tweet_id: str):

@@ -1,12 +1,10 @@
-from sqlalchemy import Column, ForeignKey, String, DateTime, Date
+from sqlalchemy import Column, String, DateTime, Date
 from sqlalchemy.orm import relationship
 
 from config.database import Base
 
 
 # SQLAlchemy models
-
-
 class User(Base):
     __tablename__ = "users"
 
@@ -20,15 +18,3 @@ class User(Base):
 
     tweets = relationship("Tweet", back_populates="user",
                           cascade="all, delete-orphan")
-
-
-class Tweet(Base):
-    __tablename__ = "tweets"
-
-    tweet_id = Column(String, primary_key=True, index=True)
-    user_id = Column(String, ForeignKey("users.user_id",))
-    text = Column(String)
-    created_time = Column(DateTime)
-
-    user = relationship("User",
-                        back_populates="tweets",)
