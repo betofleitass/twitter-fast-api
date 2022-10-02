@@ -1,18 +1,12 @@
-from fastapi import (Body, FastAPI, HTTPException,
-                     Path, Query, status, )
+from fastapi import (FastAPI, status)
 
-from pydantic import EmailStr, SecretStr
-from sql import alchemy_models
 
 from routers import users_router, tweets_router
 
-from sqlalchemy.orm import Session
+from sql import models
+from sql.database import engine
 
-import models
-
-from sql.database import SessionLocal, engine
-
-alchemy_models.Base.metadata.create_all(bind=engine)
+models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 

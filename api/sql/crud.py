@@ -4,25 +4,25 @@ from datetime import datetime
 
 from sqlalchemy.orm import Session
 
-from sql import alchemy_models
+from sql import models
 from models.schemas import User, UserCreate
 from models.schemas import Tweet, TweetCreate
 
 
 def get_user(db: Session, user_id: str):
-    return db.query(alchemy_models.User).filter(alchemy_models.User.user_id == str(user_id)).first()
+    return db.query(models.User).filter(models.User.user_id == str(user_id)).first()
 
 
 def get_user_by_email(db: Session, email: str):
-    return db.query(alchemy_models.User).filter(alchemy_models.User.email == email).first()
+    return db.query(models.User).filter(models.User.email == email).first()
 
 
 def get_users(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(alchemy_models.User).offset(skip).limit(limit).all()
+    return db.query(models.User).offset(skip).limit(limit).all()
 
 
 def create_user(db: Session, user: UserCreate):
-    db_user = alchemy_models.User(
+    db_user = models.User(
         user_id=str(uuid.uuid4()),
         username=user.username,
         first_name=user.first_name,
@@ -37,7 +37,7 @@ def create_user(db: Session, user: UserCreate):
 
 
 def post_tweet(db: Session, tweet: TweetCreate):
-    db_tweet = alchemy_models.Tweet(
+    db_tweet = models.Tweet(
         tweet_id=str(uuid.uuid4()),
         user_id=str(tweet.user_id),
         text=tweet.text,
@@ -50,4 +50,4 @@ def post_tweet(db: Session, tweet: TweetCreate):
 
 
 def get_items(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(alchemy_models.Item).offset(skip).limit(limit).all()
+    return db.query(models.Item).offset(skip).limit(limit).all()
