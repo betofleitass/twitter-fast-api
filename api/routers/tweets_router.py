@@ -101,14 +101,14 @@ async def get_tweets(
         - **limit: int (optional)** -> The limit the numbers of tweets returned
 
     # Returns:
-    - **list[tweets]** : A list of tweets
+    - **list[Tweet]** : A list of tweets
 
     # Raises:
     - **HTTP 404**: When an error ocurred
     """
 
-    tweets = crud.get_tweets(db, skip=skip, limit=limit)
-    return tweets
+    db_tweets = crud.get_tweets(db, skip=skip, limit=limit)
+    return db_tweets
 
 
 # Get a Tweet

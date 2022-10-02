@@ -83,27 +83,44 @@ async def create_user(
 # List of Users Read
 @router.get(
     path="/",
-    # response_model=List[User],
+    response_model=List[User],
     status_code=status.HTTP_200_OK,
     summary="Get a list of users"
 )
 async def get_users(
-
+    skip: int = Query(
+        default=0,
+        title="Skip",
+        description="Numbers of users to skip",
+        ge=0,
+        example=5,
+    ),
+    limit: int = Query(
+        default=0,
+        title="limit",
+        description="Limit the numbers of users returned",
+        ge=0,
+        example=5,
+    ),
+    db: Session = Depends(get_db)
 ):
     """
     # Get a list of users:
 
     # Parameters:
-    -  ### None
+    -  ### Query parameters :
+        - **skip: int (optional)** -> Numbers of users to skip
+        - **limit: int (optional)** -> The limit the numbers of users returned
 
     # Returns:
-    - **users** : A list of users
+    - **list[User]** : A list of users
 
     # Raises:
     - **HTTP 404**: When an error ocurred
     """
 
-    return {"message": "ok"}
+    db_users = crud.get_users(db, skip=skip, limit=limit)
+    return db_users
 
 
 # User Read
@@ -190,7 +207,7 @@ async def update_user(
 # User Delete
 @router.delete(
     path="/{user_id}",
-    # response_model=User,
+    response_model=User,
     status_code=status.HTTP_200_OK,
     summary="Delete a user"
 )
@@ -206,7 +223,8 @@ async def delete_user(
                 "value": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
             },
         },
-        )
+        ),
+        db: Session = Depends(get_db)
 ):
     """
     # Deletes a user with the given user id:
@@ -219,7 +237,10 @@ async def delete_user(
     - **user** : The user that was deleted with it's information
 
     # Raises:
-    - **HTTP 404**: When an error ocurred during the update
+    - **HTTP 404**: When an error ocurred during the delete
     """
 
-    return {"user_deleted": user_id}
+    db_user = crud.delete_user(db, user_id)
+    if db_user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return db_user

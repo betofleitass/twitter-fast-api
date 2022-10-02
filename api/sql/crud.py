@@ -38,6 +38,14 @@ def create_user(db: Session, user: UserCreate):
     return db_user
 
 
+def delete_user(db: Session, user_id: str):
+    user = get_user(db, user_id=user_id)
+    if user:
+        db.delete(user)
+        db.commit()
+    return user
+
+
 # Tweets
 
 def post_tweet(db: Session, tweet: TweetCreate):
