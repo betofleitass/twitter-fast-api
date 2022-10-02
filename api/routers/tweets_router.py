@@ -172,7 +172,8 @@ async def delete_tweet(
                 "value": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
             },
         },
-        )
+        ),
+        db: Session = Depends(get_db)
 ):
     """
     # Deletes a tweet with the given tweet id:
@@ -187,5 +188,7 @@ async def delete_tweet(
     # Raises:
     - **HTTP 404**: When an error ocurred during the delete
     """
-
-    return {"user_deleted": tweet_id}
+    db_tweet = crud.delete_tweet(db, tweet_id)
+    if db_tweet is None:
+        raise HTTPException(status_code=404, detail="Tweet not found")
+    return db_tweet

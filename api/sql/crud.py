@@ -59,3 +59,11 @@ def get_tweets(db: Session, skip: int = 0, limit: int = 100):
 
 def get_tweet(db: Session, tweet_id: str):
     return db.query(models.Tweet).filter(models.Tweet.tweet_id == str(tweet_id)).first()
+
+
+def delete_tweet(db: Session, tweet_id: str):
+    tweet = get_tweet(db, tweet_id=tweet_id)
+    if tweet:
+        db.delete(tweet)
+        db.commit()
+    return tweet
