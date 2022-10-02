@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from schemas.users import UserCreate, User
 import services.users as service
-from sql.database import SessionLocal
+from config.database import SessionLocal
 
 router = APIRouter(
     prefix="/users",

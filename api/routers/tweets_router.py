@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from schemas.tweets import Tweet, TweetCreate
 import services.tweets as service
-from sql.database import SessionLocal
+from config.database import SessionLocal
 
 router = APIRouter(
     prefix="/tweets",

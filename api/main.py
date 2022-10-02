@@ -4,7 +4,7 @@ from fastapi.openapi.utils import get_openapi
 
 from routers import users_router, tweets_router
 from sql import models
-from sql.database import engine
+from config.database import engine
 
 models.Base.metadata.create_all(bind=engine)
 
