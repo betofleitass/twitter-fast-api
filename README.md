@@ -2,7 +2,7 @@
 
 This is a project for  [**Platzi's FastAPI course.**](https://platzi.com/cursos/fastapi-modularizacion-datos/)
 
-<a><img src="https://user-images.githubusercontent.com/95726794/193625614-56272b6d-9629-49b5-9aaf-45ffa5d38fcd.jpeg" width="40%" heigth="40%"></a>
+<a><img src="https://user-images.githubusercontent.com/95726794/193625614-56272b6d-9629-49b5-9aaf-45ffa5d38fcd.jpeg" width="50%" heigth="50%"></a>
 
 ## Table of Contents:
 - [Description](#description)
