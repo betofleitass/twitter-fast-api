@@ -3,11 +3,13 @@ from uuid import UUID
 
 from fastapi import (APIRouter, Body, Depends, HTTPException,
                      Path, Query, status)
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
 from config import SessionLocal
-from schemas import UserCreate, User
-from services import users as service
+from schemas import UserCreate, User, Token
+from services import users as service, auth as auth_service
+
 
 router = APIRouter(
     prefix="/users",
@@ -24,7 +26,36 @@ def get_db():
         db.close()
 
 
+# User Login
+@router.post(
+    "/login",
+    tags=["users"],
+    response_model=Token
+)
+async def login_for_access_token(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    db: Session = Depends(get_db)
+):
+    """
+    ## Login for access token
+
+    ### Args
+    The app can receive next fields by form data
+    - username: Your username or email
+    - password: Your password
+
+    ### Returns
+    - access token and token type
+    """
+    access_token = auth_service.generate_token(
+        db,
+        form_data.username,
+        form_data.password)
+    return Token(access_token=access_token, token_type="bearer")
+
 # User Create
+
+
 @router.post(
     path="/",
     response_model=User,
