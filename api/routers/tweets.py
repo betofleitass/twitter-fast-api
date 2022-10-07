@@ -40,7 +40,8 @@ async def post_tweet(
             },
         },
     ),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
     """
     # Post a new tweet and save it to the database:
@@ -124,7 +125,8 @@ async def get_tweet(
             },
         },
         ),
-        db: Session = Depends(get_db)
+        db: Session = Depends(get_db),
+        current_user: User = Depends(get_current_user)
 ):
     """
     # Get a single tweet with the given tweet id:
@@ -166,7 +168,8 @@ async def delete_tweet(
             },
         },
         ),
-        db: Session = Depends(get_db)
+        db: Session = Depends(get_db),
+        current_user: User = Depends(get_current_user)
 ):
     """
     # Deletes a tweet with the given tweet id:

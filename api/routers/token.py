@@ -13,14 +13,6 @@ router = APIRouter(
 )
 
 
-@router.get("/items/")
-async def read_items(
-    token: str = Depends(oauth2_scheme),
-    db: Session = Depends(get_db)
-):
-    return {"token": token}
-
-
 @router.post(
     "/login",
     response_model=Token

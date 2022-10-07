@@ -5,7 +5,7 @@ from fastapi import APIRouter, Body, Depends, HTTPException, Path, Query, status
 from sqlalchemy.orm import Session
 
 from schemas.users import UserCreate, User
-from services.auth import get_password_hash
+from services.auth import get_password_hash, get_current_user
 from services.database import get_db
 from services.users import (get_user as service_get_user,
                             get_user_by_email as service_get_user_by_email,
@@ -46,7 +46,8 @@ async def create_user(
             },
         },
     ),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
     """
     # Creates a new user and save it to the database:
@@ -98,7 +99,8 @@ async def get_users(
         ge=0,
         example=5,
     ),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
     """
     # Get a list of users:
@@ -139,7 +141,8 @@ async def get_user(
             },
         },
         ),
-        db: Session = Depends(get_db)
+        db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
     """
     # Get a single user with the given user id:
@@ -190,7 +193,8 @@ async def update_user(
             max_length=15,
             example="newusername",
         ),
-        db: Session = Depends(get_db)
+        db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
     """
     # Updates a user with the given user id:
@@ -247,7 +251,8 @@ async def delete_user(
             },
         },
         ),
-        db: Session = Depends(get_db)
+        db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
     """
     # Deletes a user with the given user id:
