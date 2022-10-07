@@ -1,6 +1,8 @@
 from datetime import datetime, timedelta
 from typing import Optional
+import os
 
+from dotenv import load_dotenv
 from jose import JWTError, jwt
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
@@ -11,10 +13,12 @@ from models.users import User as UserModel
 from schemas.token import TokenData
 from services.database import get_db
 
-SECRET_KEY = "2ff31460bc2e98c0cd3526957623b695bc7fbff87c3e38d1bf32c9970faaab86"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
+load_dotenv()
+
+ACCESS_TOKEN_EXPIRE_MINUTES = os.getenv('ACCESS_TOKEN_EXPIRE_MINUTES')
+ALGORITHM = os.getenv('ALGORITHM')
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
@@ -50,7 +54,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(minutes=15)
+        expire = datetime.utcnow() + timedelta(minutes=int(ACCESS_TOKEN_EXPIRE_MINUTES))
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
@@ -64,7 +68,7 @@ def generate_token(db: Session, username, password):
             detail="Incorrect email/username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token_expires = timedelta(minutes=int(ACCESS_TOKEN_EXPIRE_MINUTES))
     return create_access_token(
         data={"sub": user.username}, expires_delta=access_token_expires
     )
