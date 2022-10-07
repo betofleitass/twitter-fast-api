@@ -4,6 +4,7 @@ from uuid import UUID
 from pydantic import BaseModel, Field
 
 
+# Pydantic Model
 class TweetBase(BaseModel):
     text: str = Field(
         ...,

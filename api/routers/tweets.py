@@ -7,21 +7,15 @@ from sqlalchemy.orm import Session
 
 from config import SessionLocal
 from schemas import Tweet, TweetCreate
+from schemas import User
 from services import tweets as service
+from services.database import get_db
+from services.auth import get_current_user
 
 router = APIRouter(
     prefix="/tweets",
     tags=["Tweets"],
 )
-
-
-# Dependency
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 
 # Tweet Post
@@ -87,7 +81,8 @@ async def get_tweets(
         ge=0,
         example=5,
     ),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
     """
     # Get a list of tweets:

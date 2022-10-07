@@ -5,9 +5,8 @@ from pydantic import BaseModel, EmailStr, Field, SecretStr
 
 from .tweets import Tweet
 
+
 # Pydantic models.
-
-
 class UserBase(BaseModel):
     username: str = Field(
         ...,
