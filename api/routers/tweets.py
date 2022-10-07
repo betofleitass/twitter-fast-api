@@ -1,16 +1,17 @@
 from typing import List
 from uuid import UUID
 
-from fastapi import (APIRouter, Body, Depends, HTTPException,
-                     Path, Query, status)
+from fastapi import APIRouter, Body, Depends, HTTPException, Path, Query, status
 from sqlalchemy.orm import Session
 
-from config import SessionLocal
-from schemas import Tweet, TweetCreate
-from schemas import User
-from services import tweets as service
-from services.database import get_db
+from schemas.tweets import Tweet, TweetCreate
+from schemas.users import User
 from services.auth import get_current_user
+from services.database import get_db
+from services.tweets import (delete_tweet as service_delete_tweet,
+                             get_tweet as service_get_tweet,
+                             get_tweets as service_get_tweets,
+                             post_tweet as service_post_tweet)
 
 router = APIRouter(
     prefix="/tweets",
@@ -56,7 +57,7 @@ async def post_tweet(
     # Raises:
     - **HTTP 404**: When an error ocurred during the creation
     """
-    return service.post_tweet(db=db, tweet=tweet)
+    return service_post_tweet(db=db, tweet=tweet)
 
 
 # Get List of Tweets
@@ -99,7 +100,7 @@ async def get_tweets(
     - **HTTP 404**: When an error ocurred
     """
 
-    db_tweets = service.get_tweets(db, skip=skip, limit=limit)
+    db_tweets = service_get_tweets(db, skip=skip, limit=limit)
     return db_tweets
 
 
@@ -139,7 +140,7 @@ async def get_tweet(
     - **HTTP 404**: When an error ocurred getting the tweet
     """
 
-    db_tweet = service.get_tweet(db, tweet_id=tweet_id)
+    db_tweet = service_get_tweet(db, tweet_id=tweet_id)
     if db_tweet is None:
         raise HTTPException(status_code=404, detail="Tweet not found")
     return db_tweet
@@ -180,7 +181,7 @@ async def delete_tweet(
     # Raises:
     - **HTTP 404**: When an error ocurred during the delete
     """
-    db_tweet = service.delete_tweet(db, tweet_id)
+    db_tweet = service_delete_tweet(db, tweet_id)
     if db_tweet is None:
         raise HTTPException(status_code=404, detail="Tweet not found")
     return db_tweet

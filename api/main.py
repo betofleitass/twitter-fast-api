@@ -2,18 +2,21 @@ from fastapi import (FastAPI, status)
 from fastapi.openapi.utils import get_openapi
 
 
-from routers import users, tweets, token
-from config import Base
-from config import engine
+from config.database import Base
+from config.database import engine
+from routers.users import router as user_router
+from routers.token import router as token_router
+from routers.tweets import router as tweets_router
+
 
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
 
-app.include_router(token.router)
-app.include_router(users.router)
-app.include_router(tweets.router)
+app.include_router(token_router)
+app.include_router(user_router)
+app.include_router(tweets_router)
 
 
 # Customize open api schema

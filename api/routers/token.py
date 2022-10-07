@@ -1,17 +1,12 @@
-from typing import List, Optional
-from uuid import UUID
-
-from fastapi import (APIRouter, Body, Depends, HTTPException,
-                     Path, Query, status)
+from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
-from config import SessionLocal
-from schemas import UserCreate, User
-from schemas.token import Token
-from services import users as service
-from services.database import get_db
 from services.auth import oauth2_scheme, generate_token, get_current_user
+from services.database import get_db
+from schemas.token import Token
+from schemas.users import User
+
 
 router = APIRouter(
     tags=["Token"],

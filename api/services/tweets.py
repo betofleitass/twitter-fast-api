@@ -5,7 +5,7 @@ import uuid
 from sqlalchemy.orm import Session
 
 from models.tweets import Tweet as TweetModel
-from schemas import TweetCreate
+from schemas.tweets import TweetCreate
 
 
 # CRUD for Tweets

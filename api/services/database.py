@@ -1,4 +1,4 @@
-from config import SessionLocal
+from config.database import SessionLocal
 
 
 # Dependency

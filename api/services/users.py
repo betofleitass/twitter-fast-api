@@ -6,8 +6,7 @@ import uuid
 from sqlalchemy.orm import Session
 
 from models.users import User as UserModel
-from schemas import UserCreate
-from services.auth import oauth2_scheme
+from schemas.users import UserCreate
 
 
 # CRUD for Users

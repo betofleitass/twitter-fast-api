@@ -1,15 +1,19 @@
 from typing import List, Optional
 from uuid import UUID
 
-from fastapi import (APIRouter, Body, Depends, HTTPException,
-                     Path, Query, status)
+from fastapi import APIRouter, Body, Depends, HTTPException, Path, Query, status
 from sqlalchemy.orm import Session
 
-from config import SessionLocal
-from schemas import UserCreate, User
-from services import users as service
-from services.database import get_db
+from schemas.users import UserCreate, User
 from services.auth import get_password_hash
+from services.database import get_db
+from services.users import (get_user as service_get_user,
+                            get_user_by_email as service_get_user_by_email,
+                            get_user_by_username as service_get_user_by_username,
+                            delete_user as service_delete_user,
+                            create_user as service_create_user,
+                            get_users as service_get_users,
+                            update_user as service_update_user)
 
 router = APIRouter(
     prefix="/users",
@@ -64,12 +68,12 @@ async def create_user(
     - **HTTP 404**: When an error ocurred during the creation
     """
 
-    db_user = service.get_user_by_email(db, email=user.email)
+    db_user = service_get_user_by_email(db, email=user.email)
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
     # Hash the password
     user.password = get_password_hash(password=user.password)
-    return service.create_user(db=db, user=user)
+    return service_create_user(db=db, user=user)
 
 
 # List of Users Read
@@ -111,7 +115,7 @@ async def get_users(
     - **HTTP 404**: When an error ocurred
     """
 
-    db_users = service.get_users(db, skip=skip, limit=limit)
+    db_users = service_get_users(db, skip=skip, limit=limit)
     return db_users
 
 
@@ -151,7 +155,7 @@ async def get_user(
     - **HTTP 404**: When an error ocurred during the update
     """
 
-    db_user = service.get_user(db, user_id=user_id)
+    db_user = service_get_user(db, user_id=user_id)
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
 
@@ -206,17 +210,17 @@ async def update_user(
     """
 
     # Chekc if the user exists
-    db_user = service.get_user(db, user_id=user_id)
+    db_user = service_get_user(db, user_id=user_id)
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
 
     # Check if the username is taken
-    db_user_username = service.get_user_by_username(db, username=username)
+    db_user_username = service_get_user_by_username(db, username=username)
     if db_user_username:
         raise HTTPException(status_code=404, detail="Username already taken")
 
     # If no exception is raised
-    db_user = service.update_user(db,
+    db_user = service_update_user(db,
                                   user_id=user_id,
                                   username=username)
 
@@ -259,7 +263,7 @@ async def delete_user(
     - **HTTP 404**: When an error ocurred during the delete
     """
 
-    db_user = service.delete_user(db, user_id)
+    db_user = service_delete_user(db, user_id)
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
     return db_user
