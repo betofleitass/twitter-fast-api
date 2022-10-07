@@ -1,11 +1,11 @@
-from fastapi import (FastAPI, status)
+from fastapi import FastAPI
 from fastapi.openapi.utils import get_openapi
 
 
 from config.database import Base
 from config.database import engine
 from api.routers.users import router as user_router
-from api.routers.token import router as token_router
+from api.routers.login import router as token_router
 from api.routers.tweets import router as tweets_router
 
 
