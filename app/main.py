@@ -4,9 +4,9 @@ from fastapi.openapi.utils import get_openapi
 
 from config.database import Base
 from config.database import engine
-from routers.users import router as user_router
-from routers.token import router as token_router
-from routers.tweets import router as tweets_router
+from api.routers.users import router as user_router
+from api.routers.token import router as token_router
+from api.routers.tweets import router as tweets_router
 
 
 Base.metadata.create_all(bind=engine)
