@@ -14,9 +14,9 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
 
-app.include_router(token_router)
-app.include_router(user_router)
-app.include_router(tweets_router)
+app.include_router(token_router, prefix="/api/v1",)
+app.include_router(user_router, prefix="/api/v1",)
+app.include_router(tweets_router, prefix="/api/v1",)
 
 
 # Customize open api schema
