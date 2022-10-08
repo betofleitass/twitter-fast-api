@@ -1,27 +1,22 @@
 from typing import List
 from uuid import UUID
 
-from fastapi import (APIRouter, Body, Depends, HTTPException,
-                     Path, Query, status)
+from fastapi import APIRouter, Body, Depends, HTTPException, Path, Query, status
 from sqlalchemy.orm import Session
 
-from config import SessionLocal
-from schemas import Tweet, TweetCreate
-from services import tweets as service
+from schemas.tweets import Tweet, TweetCreate
+from schemas.users import User
+from services.auth import get_current_user
+from services.database import get_db
+from services.tweets import (delete_tweet as service_delete_tweet,
+                             get_tweet as service_get_tweet,
+                             get_tweets as service_get_tweets,
+                             post_tweet as service_post_tweet)
 
 router = APIRouter(
     prefix="/tweets",
     tags=["Tweets"],
 )
-
-
-# Dependency
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 
 # Tweet Post
@@ -45,8 +40,9 @@ async def post_tweet(
             },
         },
     ),
-    db: Session = Depends(get_db)
-):
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+) -> Tweet:
     """
     # Post a new tweet and save it to the database:
 
@@ -60,9 +56,10 @@ async def post_tweet(
     - **tweet** : The tweet that was post with all the information
 
     # Raises:
-    - **HTTP 404**: When an error ocurred during the creation
+    - **HTTP 401**: User is not authenticated
+    - **HTTP 422**: Validation error
     """
-    return service.post_tweet(db=db, tweet=tweet)
+    return service_post_tweet(db=db, tweet=tweet)
 
 
 # Get List of Tweets
@@ -78,17 +75,18 @@ async def get_tweets(
         title="Skip",
         description="Numbers of tweets to skip",
         ge=0,
-        example=5,
+        example=0,
     ),
     limit: int = Query(
-        default=0,
+        default=None,
         title="limit",
         description="Limit the numbers of tweets returned",
         ge=0,
         example=5,
     ),
-    db: Session = Depends(get_db)
-):
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+) -> List[Tweet]:
     """
     # Get a list of tweets:
 
@@ -101,10 +99,11 @@ async def get_tweets(
     - **list[Tweet]** : A list of tweets
 
     # Raises:
-    - **HTTP 404**: When an error ocurred
+    - **HTTP 401**: User is not authenticated
+    - **HTTP 422**: Validation error
     """
 
-    db_tweets = service.get_tweets(db, skip=skip, limit=limit)
+    db_tweets: List[Tweet] = service_get_tweets(db, skip=skip, limit=limit)
     return db_tweets
 
 
@@ -128,8 +127,9 @@ async def get_tweet(
             },
         },
         ),
-        db: Session = Depends(get_db)
-):
+        db: Session = Depends(get_db),
+        current_user: User = Depends(get_current_user)
+) -> Tweet:
     """
     # Get a single tweet with the given tweet id:
 
@@ -141,10 +141,12 @@ async def get_tweet(
     - **tweet** : The tweet that was found with it's information
 
     # Raises:
-    - **HTTP 404**: When an error ocurred getting the tweet
+    - **HTTP 401**: User is not authenticated
+    - **HTTP 401**: Tweet not found
+    - **HTTP 422**: Validation error
     """
 
-    db_tweet = service.get_tweet(db, tweet_id=tweet_id)
+    db_tweet: Tweet = service_get_tweet(db, tweet_id=tweet_id)
     if db_tweet is None:
         raise HTTPException(status_code=404, detail="Tweet not found")
     return db_tweet
@@ -170,8 +172,9 @@ async def delete_tweet(
             },
         },
         ),
-        db: Session = Depends(get_db)
-):
+        db: Session = Depends(get_db),
+        current_user: User = Depends(get_current_user)
+) -> Tweet:
     """
     # Deletes a tweet with the given tweet id:
 
@@ -183,9 +186,11 @@ async def delete_tweet(
     - **tweet** : The tweet that was deleted with it's information
 
     # Raises:
-    - **HTTP 404**: When an error ocurred during the delete
+    - **HTTP 401**: User is not authenticated
+    - **HTTP 404**: Tweet not found
+    - **HTTP 422**: Validation error
     """
-    db_tweet = service.delete_tweet(db, tweet_id)
+    db_tweet: Tweet = service_delete_tweet(db, tweet_id)
     if db_tweet is None:
         raise HTTPException(status_code=404, detail="Tweet not found")
     return db_tweet

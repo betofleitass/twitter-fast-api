@@ -1,10 +1,14 @@
-from sqlalchemy import Column, ForeignKey, String, DateTime, Date
+from sqlalchemy import Column, ForeignKey, String, DateTime
 from sqlalchemy.orm import relationship
 
-from config import Base
+from config.database import Base
 
 
 class Tweet(Base):
+    """
+        SQLAlchemy model for a Tweet
+    """
+
     __tablename__ = "tweets"
 
     tweet_id = Column(String, primary_key=True, index=True)

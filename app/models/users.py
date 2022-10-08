@@ -1,11 +1,14 @@
-from sqlalchemy import Column, String, DateTime, Date
+from sqlalchemy import Column, String, Date
 from sqlalchemy.orm import relationship
 
-from config import Base
+from config.database import Base
 
 
-# SQLAlchemy models
 class User(Base):
+    """
+        SQLAlchemy model for a User
+    """
+
     __tablename__ = "users"
 
     user_id = Column(String, primary_key=True, index=True)

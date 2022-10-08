@@ -1,13 +1,12 @@
-from datetime import date, datetime
+from datetime import date
 from uuid import UUID
 
-from pydantic import BaseModel, EmailStr, Field, SecretStr
+from pydantic import BaseModel, EmailStr, Field
 
 from .tweets import Tweet
 
+
 # Pydantic models.
-
-
 class UserBase(BaseModel):
     username: str = Field(
         ...,
