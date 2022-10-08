@@ -2,7 +2,7 @@
 
 This is a project for  [**Platzi's FastAPI course.**](https://platzi.com/cursos/fastapi-modularizacion-datos/)
 
-<a><img src="https://user-images.githubusercontent.com/95726794/193625614-56272b6d-9629-49b5-9aaf-45ffa5d38fcd.jpeg" width="50%" heigth="50%"></a>
+<a><img src="https://user-images.githubusercontent.com/95726794/194726089-94b2c627-3561-419b-959c-0158bb105799.jpeg" width="50%" heigth="50%"></a>
 
 ## Table of Contents:
 - [Twitter API <a><img src="https://img.icons8.com/color/48/000000/twitter--v1.png" width="3%"></a>](#twitter-api-)
