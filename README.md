@@ -5,20 +5,26 @@ This is a project for  [**Platzi's FastAPI course.**](https://platzi.com/cursos/
 <a><img src="https://user-images.githubusercontent.com/95726794/193625614-56272b6d-9629-49b5-9aaf-45ffa5d38fcd.jpeg" width="50%" heigth="50%"></a>
 
 ## Table of Contents:
+- [Twitter API <a><img src="https://img.icons8.com/color/48/000000/twitter--v1.png" width="3%"></a>](#twitter-api-)
+- [Table of Contents:](#table-of-contents)
 - [Description](#description)
-  - [Features](#features)
-  - [Tech Stack](#tech-stack)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
 - [Installation](#installation)
-  - [Run it locally](#run-it-locally)
+- [Run it locally](#run-it-locally)
 - [Documentation](#documentation)
 - [Contributing](#contributing)
+- [Authors](#authors)
+- [License](#license)
 
 ## Description
 
-It's a Twitter REST API made with FastAPI for learning purposes.
+Twitter REST API made with FastAPI for learning purposes.
 
 ## Features
 
+- User signup and login.
+- JSON Web Tokens Authentication.
 - FastAPI Routers.
 - SQLite3 conecction with SQLAlchemy.
 - SQLAlchemy models.
@@ -54,11 +60,13 @@ It's a Twitter REST API made with FastAPI for learning purposes.
   
 ## Run it locally
 
-1. Go to the api directory: ` cd api`
+1. Go to the app directory: ` cd app`
 
-2. Run the server: ` uvicorn main:app --reload`
+2. Change the ` env.example` file name to ` .env`, pay atenttion to the dot before env.
 
-3. Open a browser and go to: ` http://127.0.0.1:8000/`
+3. Run the server: ` uvicorn main:app --reload`
+
+4. Open a browser and go to: ` http://127.0.0.1:8000/`
 
 ## Documentation
 
