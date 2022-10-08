@@ -48,13 +48,13 @@ async def create_user(
     ),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
-):
+) -> User:
     """
     # Creates a new user and save it to the database:
 
     # Parameters:
     -  ### Request Body parameter :
-        - **user: UserCreate**: a UserCreate model with the following information:
+        - **user: UserCreate** -> a UserCreate model with the following information:
             - **username: str (required)** -> User's username
             - **first_name: str (required)** -> User's first name
             - **last_name: str (required)** -> User's last name
@@ -63,15 +63,22 @@ async def create_user(
             - **password: SecretStr (required)** -> User's password
 
     # Returns:
-    - **user** : The user that was created with all the information
+    - **user**: User -> The user that was created with all the information
 
     # Raises:
-    - **HTTP 404**: When an error ocurred during the creation
+    - **HTTP 400**: The email or username is already registered
+    - **HTTP 401**: User is not authenticated
+    - **HTTP 422**: Validation error
     """
-
+    # Check email
     db_user = service_get_user_by_email(db, email=user.email)
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
+    # Check username
+    db_user = service_get_user_by_username(db, username=user.username)
+    if db_user:
+        raise HTTPException(
+            status_code=400, detail="Username already registered")
     # Hash the password
     user.password = get_password_hash(password=user.password)
     return service_create_user(db=db, user=user)
@@ -90,18 +97,18 @@ async def get_users(
         title="Skip",
         description="Numbers of users to skip",
         ge=0,
-        example=5,
+        example=0,
     ),
     limit: int = Query(
-        default=0,
+        default=None,
         title="limit",
         description="Limit the numbers of users returned",
         ge=0,
-        example=5,
+        example=10,
     ),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
-):
+) -> List[User]:
     """
     # Get a list of users:
 
@@ -111,10 +118,11 @@ async def get_users(
         - **limit: int (optional)** -> The limit the numbers of users returned
 
     # Returns:
-    - **list[User]** : A list of users
+    - **list[User]** : A list of users with its information
 
     # Raises:
-    - **HTTP 404**: When an error ocurred
+    - **HTTP 401**: User is not authenticated
+    - **HTTP 422**: Validation error
     """
 
     db_users = service_get_users(db, skip=skip, limit=limit)
@@ -126,7 +134,7 @@ async def get_users(
     path="/{user_id}",
     response_model=User,
     status_code=status.HTTP_200_OK,
-    summary="Get a user"
+    summary="Get a user by id"
 )
 async def get_user(
         user_id: UUID = Path(
@@ -143,7 +151,7 @@ async def get_user(
         ),
         db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
-):
+) -> User:
     """
     # Get a single user with the given user id:
 
@@ -155,10 +163,12 @@ async def get_user(
     - **user** : The user that was found with it's information
 
     # Raises:
-    - **HTTP 404**: When an error ocurred during the update
+    - **HTTP 401**: User is not authenticated
+    - **HTTP 403**: User not found
+    - **HTTP 422**: Validation error
     """
 
-    db_user = service_get_user(db, user_id=user_id)
+    db_user: User = service_get_user(db, user_id=user_id)
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
 
@@ -195,7 +205,7 @@ async def update_user(
         ),
         db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
-):
+) -> User:
     """
     # Updates a user with the given user id:
 
@@ -210,18 +220,21 @@ async def update_user(
     - **user** : The user that was updated with it's information
 
     # Raises:
-    - **HTTP 404**: When an error ocurred during the update
+    - **HTTP 400**: Username is already taken
+    - **HTTP 401**: User is not authenticated
+    - **HTTP 422**: Validation error
     """
 
     # Chekc if the user exists
-    db_user = service_get_user(db, user_id=user_id)
+    db_user: User = service_get_user(db, user_id=user_id)
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
 
     # Check if the username is taken
-    db_user_username = service_get_user_by_username(db, username=username)
+    db_user_username: User = service_get_user_by_username(
+        db, username=username)
     if db_user_username:
-        raise HTTPException(status_code=404, detail="Username already taken")
+        raise HTTPException(status_code=400, detail="Username already taken")
 
     # If no exception is raised
     db_user = service_update_user(db,
@@ -239,7 +252,7 @@ async def update_user(
     summary="Delete a user"
 )
 async def delete_user(
-        user_id: UUID = Path(
+    user_id: UUID = Path(
         ...,
         title="User's id",
         description="The id of the user to be deleted. (required)",
@@ -250,25 +263,27 @@ async def delete_user(
                 "value": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
             },
         },
-        ),
-        db: Session = Depends(get_db),
+    ),
+    db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
-):
+) -> User:
     """
     # Deletes a user with the given user id:
 
     # Parameters:
-    -  ### Request Path parameter :
+    -  ### Request Path parameter:
         - **user_id: UUID (required)** -> User's Id
 
     # Returns:
-    - **user** : The user that was deleted with it's information
+    - **user: User** -> The user that was deleted with it's information
 
     # Raises:
-    - **HTTP 404**: When an error ocurred during the delete
+    - **HTTP 401**: User is not authenticated
+    - **HTTP 404**: User not found
+    - **HTTP 422**: Validation error
     """
 
-    db_user = service_delete_user(db, user_id)
+    db_user: User = service_delete_user(db, user_id)
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
     return db_user
