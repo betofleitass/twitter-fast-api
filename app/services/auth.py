@@ -2,23 +2,17 @@ from datetime import datetime, timedelta
 from typing import Optional
 import os
 
-from dotenv import load_dotenv
 from jose import JWTError, jwt
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
+from config.settings import ACCESS_TOKEN_EXPIRE_MINUTES, ALGORITHM, SECRET_KEY
 from models.users import User as UserModel
 from schemas.token import TokenData
 from services.database import get_db
 
-
-load_dotenv()
-
-ACCESS_TOKEN_EXPIRE_MINUTES = os.getenv('ACCESS_TOKEN_EXPIRE_MINUTES')
-ALGORITHM = os.getenv('ALGORITHM')
-SECRET_KEY = os.getenv('SECRET_KEY')
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/login")
